@@ -1,13 +1,23 @@
 class PostsController < ApplicationController
   def index
-    @user = User.find(params[:user_id])
-    @posts = @user.posts.includes(:comments)
+    page = params[:page] || 1
+    per_page = 10
+
+    @posts = Post.includes(:author)
+      .includes(:comments)
+      .where(author: params[:user_id])
+      .order(created_at: :asc)
+      .offset((page.to_i - 1) * per_page)
+      .limit(per_page)
+
+    @total_pages = (current_user.posts.count.to_f / per_page).ceil
+    @author = @posts.first.author unless @posts.first.nil?
   end
 
   def show
-    @user = User.find(params[:user_id])
-    @post = Post.includes(:comments).find(params[:id])
-    @comment = Comment.new
+    @post = Post.find(params[:id])
+    @current_user = User.first
+    @like = Like.new
   end
 
   def new
@@ -15,21 +25,17 @@ class PostsController < ApplicationController
   end
 
   def create
-    @post = current_user.posts.new(post_params)
-
+    @post = current_user.posts.build(post_params)
     if @post.save
-      flash[:notice] = 'Post created successfully!'
-      redirect_to user_posts_path(current_user)
-
+      redirect_to user_posts_path(current_user), notice: 'Post created successfully!'
     else
-      flash[:alert] = 'Something went wrong'
-      render 'new'
+      render :new
     end
   end
 
   private
 
   def post_params
-    params.require(:post).permit(:title, :content)
+    params.require(:post).permit(:title, :text)
   end
 end

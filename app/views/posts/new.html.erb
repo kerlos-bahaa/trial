@@ -1,9 +1,21 @@
-<section class="comment-container container">
-<%= form_with model: @post, url:  user_posts_path, class: 'user-card flex-col' do |f| %>
-<%= f.label :title, "Post title" %>
-<%= f.text_field :title %>
-<%= f.label :text, "Write your thought:" %>
-<%= f.text_area :content, class: 'w-100', rows: 10 %>
-<%= f.submit "Post", class: 'btn' %>
-<% end %>
-</section>
+<div class="container">
+  <div class="row justify-content-center align-items-center" style="min-height: 100vh;">
+    <div class="col-md-6">
+      <h1 class="text-center mb-4">Create Post</h1>
+
+      <%= form_with model: @post, url: user_posts_path, local: true do |form| %>
+        <div class="form-group">
+          <%= form.label :title %>
+          <%= form.text_field :title, class: "form-control", placeholder: "Enter Post Title" %>
+        </div>
+
+        <div class="form-group">
+          <%= form.label :text %>
+          <%= form.text_area :text, class: "form-control", placeholder: "Enter Post Text" %>
+        </div>
+
+        <%= form.submit "Create Post", class: "btn btn-primary btn-block" %>
+      <% end %>
+    </div>
+  </div>
+</div>
