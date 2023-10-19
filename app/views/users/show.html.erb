@@ -1,36 +1,23 @@
-<section class="container">
-
-<article class="user-card">
-<img src="<%= @user.photo %>" class="user-photo" alt="user photo">
-<div class="user-card-info">
-<h2><%= @user.name %></h2>
-<p><%= link_to "Number of posts:", user_posts_url(@user.id) %> <%= @user.posts_count %></p>
+<div class = "container bg-success">
+ 
+  <a href="/users" class="text-decoration-none bg-white text-black"> back </a>
+  <%= render 'shared/user', user: @user %>
+  <div class= "row p-3 border">
+    <h3>Bio</h3>
+    <p><%= @user.bio %> </p>
+  </div>
+  
+  <div class= "row p-3 border">
+  <%= link_to 'Add a new post', "/users/#{@user.id}/posts/new", class: "btn bg-white" %>
+  </div>
+  <% @user.recent_posts.each do |post| %>
+    <a href="/users/<%= @user.id %>/posts/<%= post.id %>" class="text-decoration-none">
+      <div class="mb-3">
+        <%= render 'shared/post', post: post %>
+      </div>
+    </a>
+  <% end %>
+  <div class="w-90 mt-5 d-flex justify-content-center align-items-center ">
+    <a href="/users/<%= @user.id %>/posts" class="btn bg-white m-1">See all posts</a>
+  </div>
 </div>
-</article>
-<div class="user-bio">
-  <strong>Bio</strong>
-  <p><%= @user.bio %></p>
-</div>
-
-<a
-href="<%= new_user_post_path(user_id: @user.id) %>"  class="btn">
-Add New Post
-</a>
-
-<% if @user.recent_posts.any? %>
-<% @user.recent_posts.each do |post| %>
-<div class="post-details">
-<h2><%= link_to post.title, user_post_path(@user,post) %><%= post.id %></h2>
-  <h3><%= post.content %></h3>
-  <p>Comments:<%= post.commentsCounter || 0 %>, Likes:<%= post.likes_count || 0 %></p>
-</div>
-<% end %>
-<%= link_to user_posts_path(@user.id) do %>
-<% end %>
-<button type="button" class="btn">
-<%= link_to "See all Posts", user_posts_path(@user) %>
-</button>
-<% else %>
-<p>No posts found.</p>
-<% end %>
-</section>

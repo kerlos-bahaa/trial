@@ -1,28 +1,16 @@
-<section class="container">
-    <div class="flex-col post-card">
-        <h1><%= @post.title %></h1>
-        <span >by <%= @user.name %></span>
-        <span >Comments : <%= @post.commentsCounter || 0 %>, Likes : <%= @post.likes_count || 0 %></span>
-
-        <div class="post-text">
-            <%= @post.content %>
+<div class = "container bg-success">
+<a href="<%= user_posts_path() %>">
+    <button id="back-btn">⬅</button>
+</a>
+<h3>Post "#" by <%= @current_user.name %></h3>
+    <a href="/users/<%= @post.author.id %>/posts/<%= @post.id %>" class="text-decoration-none">
+      <div class="mb-3">
+        <%= render 'shared/post', post:@post %>
+        <div class= "row p-3 border">
+        <%= link_to 'Add a new commment', "/users/#{@current_user.id}/posts/#{@post.id}/comments/new", class: "btn bg-white" %>
+        <%= render partial: "shared/like", locals: { like: Like.new, post_id: @post.id, user_id: @post.author.id } %>
         </div>
-    </div>
-
-
-   <div class="comment-container flex-col">
-        <%= form_with model: @comment, url: user_post_comments_path(user_id: @user.id, post_id:@post.id) do |f| %>
-            <%= f.label :comment %>
-            <%= f.text_area :text, class: "w-100", rows: 10 %>
-    <div class='flex'>
-            <%= f.submit "Add new comment", class: 'btn', disable_with: 'Submiting...'  %>
-        <% end %>
-    
-        <%= form_with model: @like, url: user_post_likes_path(user_id: @user.id, post_id:@post.id)  do |f| %>
-            <%= f.submit "Add like", class: 'btn', disable_with: 'liking...'  %>
-        <% end %>
-    </div>
-    </div>
-
-    <%= render partial: "comment_card", locals: {comments: @post.comments} %>
-</section>
+        <%= render 'shared/comment', comments: @post.comments unless @post.comments.empty? %>
+      </div>
+    </a>
+</div>
